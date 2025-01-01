@@ -1,0 +1,42 @@
+{
+  "name": "magicon_react",
+  "version": "1.0.0",
+  "description": "Icon components for React",
+  "module": "./dist/esm/magicon-react.js",
+  "types": "./dist/esm/magicon-react.d.ts",
+  "main": "./dist/cjs/magicon-react.js",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "node node_modules/.bin/rollup -c ./rollup.config.mjs",
+    "generate": "node generate.mjs",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-react": "^7.26.3",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "@types/fs-extra": "^11.0.4",
+    "@types/react": "^19.0.1",
+    "esbuild": "^0.24.0",
+    "fs-extra": "^11.2.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "rollup-plugin-dts": "^6.1.1",
+    "svgo": "^3.3.2",
+    "svgson": "^5.3.1",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.2"
+  },
+  "peerDependencies": {
+    "react": ">= 16"
+  }
+}
