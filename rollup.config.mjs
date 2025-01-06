@@ -1,5 +1,6 @@
 import dts from "rollup-plugin-dts";
 import typescript from "@rollup/plugin-typescript";
+import filesize from 'rollup-plugin-filesize';
 
 const outputFileName = 'magicon-react';
 const inputs = ['./src/magicon-react.ts'];
@@ -7,6 +8,7 @@ const inputs = ['./src/magicon-react.ts'];
 export default [
   {
     input: inputs[0],
+    external: ['react'],
     output: [
       {
         file: `dist/esm/${outputFileName}.js`,
@@ -18,6 +20,7 @@ export default [
       },
     ],
     plugins: [
+      filesize(),
       typescript({
         tsconfig: "./tsconfig.json"
       }),
@@ -25,6 +28,7 @@ export default [
   },
   {
     input: inputs[0],
+    external: ['react'],
     output: [
       {
         file: `dist/esm/${outputFileName}.d.ts`,
