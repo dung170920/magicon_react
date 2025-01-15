@@ -2,8 +2,8 @@ import dts from "rollup-plugin-dts";
 import typescript from "@rollup/plugin-typescript";
 import filesize from 'rollup-plugin-filesize';
 
-const outputFileName = 'magicon-react';
-const inputs = ['./src/magicon-react.ts'];
+const outputFileName = 'magicon';
+const inputs = ['./src/magicon.ts'];
 
 export default [
   {

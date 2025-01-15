@@ -1,6 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
 import { parse } from "svgson";
+import { optimize } from 'svgo';
 
 const toPascalCase = (str) => {
   return str
@@ -8,27 +9,41 @@ const toPascalCase = (str) => {
     .replace(/(^\w|[A-Z]|\b\w)/g, (char) => char.toUpperCase());
 };
 
+const cleanSvgContent = (svgContent) => {
+  const result = optimize(svgContent, {
+    plugins: [
+      { name: 'removeDimensions', active: true },
+      { name: 'removeAttrs', params: { attrs: '(id|class|stroke|fill)' } },
+      { name: 'removeComments', active: true },
+      { name: 'removeEmptyContainers', active: true },
+    ],
+  });
+  return result.data;
+};
+
 const createReactComponentCode = (iconName, iconSvgs) => {
   return `
 import React, { createElement, forwardRef } from 'react';
-import defaultAttributes from '../defaultAttributes';
 
-export interface IconProps extends React.SVGProps<SVGSVGElement> {
+export interface IconProps  {
   size?: string | number;
   variant?: 'outline' | 'filled';
+  className?: string;
+  color?: string;
 }
 
 const ${iconName} = forwardRef<SVGSVGElement, IconProps>(
-  ({ color = 'currentColor', size = 24, variant = 'outline', strokeWidth = 1.5, ...props }, ref) =>
+  ({ color = 'currentColor', size = 24, variant = 'outline', className, ...props }, ref) =>
     createElement(
       'svg',
       {
         ref,
-        ...defaultAttributes[variant],
-        width: size,
         height: size,
-        ...(variant === 'filled' ? { fill: color } : { stroke: color, strokeWidth }),
-        ...props,
+        width: size,
+        fill: color,
+        viewBox: '0 0 24 24',
+        className,
+        ...props
       },
       ${iconSvgs["outline"]
       .map(([tag, attrs]) => `variant === 'outline' && createElement('${tag}', ${JSON.stringify(attrs)})`)
@@ -59,8 +74,11 @@ const buildIcons = async (sourceDir, outputDir) => {
     const outlineFilePath = path.join(outlineDir, file);
     const filledFilePath = path.join(filledDir, file);
 
-    const outlineContent = await fs.readFile(outlineFilePath, "utf-8");
-    const filledContent = await fs.readFile(filledFilePath, "utf-8");
+    let outlineContent = await fs.readFile(outlineFilePath, "utf-8");
+    let filledContent = await fs.readFile(filledFilePath, "utf-8");
+
+    outlineContent = cleanSvgContent(outlineContent);
+    filledContent = cleanSvgContent(filledContent);
 
     const outlineSvg = await parseSvgContent(outlineContent);
     const filledSvg = await parseSvgContent(filledContent);

@@ -9,13 +9,13 @@
 
 ```bash
 # install dependencies
-$ npm i magicon-react
+$ npm i magicon
 ```
 
 Or via yarn:
 
 ```bash
-yarn add magicon-react
+yarn add magicon
 ```
 
 ## Usage Examples
@@ -23,7 +23,7 @@ yarn add magicon-react
 ```jsx
 import React from "react";
 //import icon.
-import { AlarmClock } from "magicon-react";
+import { AlarmClock } from "magicon";
 
 const Example = () => {
   // then use it as a normal React Component
@@ -36,7 +36,7 @@ const Example = () => {
 Adjust the props of your icons by passing a inline prop:
 
 ```jsx
-import { AlarmClock } from "magicon-react";
+import { AlarmClock } from "magicon";
 
 <AlarmClock variant="filled" size={32} color="#eee" />;
 ```
