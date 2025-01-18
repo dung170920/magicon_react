@@ -24,13 +24,7 @@ const cleanSvgContent = (svgContent) => {
 const createReactComponentCode = (iconName, iconSvgs) => {
   return `
 import React, { createElement, forwardRef } from 'react';
-
-export interface IconProps  {
-  size?: string | number;
-  variant?: 'outline' | 'filled';
-  className?: string;
-  color?: string;
-}
+import { IconProps } from '../types'
 
 const ${iconName} = forwardRef<SVGSVGElement, IconProps>(
   ({ color = 'currentColor', size = 24, variant = 'outline', className, ...props }, ref) =>
