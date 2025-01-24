@@ -22,6 +22,9 @@ const cleanSvgContent = (svgContent) => {
 };
 
 const createReactComponentCode = (iconName, iconSvgs) => {
+  const renderElement = ([tag, attrs, children]) =>
+    `createElement('${tag}', ${JSON.stringify(attrs)}${children ? `, [${children.map(renderElement).join(", ")}]` : ""})`;
+
   return `
 import React, { createElement, forwardRef } from 'react';
 import { IconProps } from '../types'
@@ -40,11 +43,13 @@ const ${iconName} = forwardRef<SVGSVGElement, IconProps>(
         ...props
       },
       ${iconSvgs["outline"]
-      .map(([tag, attrs]) => `variant === 'outline' && createElement('${tag}', ${JSON.stringify(attrs)})`)
-      .join(",\n") +
-    "," +
-    iconSvgs["filled"]
-      .map(([tag, attrs]) => `variant === 'filled' && createElement('${tag}', ${JSON.stringify(attrs)})`)
+      .map(renderElement)
+      .map((el) => `variant === 'outline' && ${el}`)
+      .join(",\n")
+    },
+      ${iconSvgs["filled"]
+      .map(renderElement)
+      .map((el) => `variant === 'filled' && ${el}`)
       .join(",")
     }
     ),
@@ -95,8 +100,29 @@ const buildIcons = async (sourceDir, outputDir) => {
 
 const parseSvgContent = async (svgContent) => {
   const parsed = await parse(svgContent);
-  return parsed.children.map((child) => [child.name, child.attributes || {}]);
+
+  const camelCaseAttributes = (attributes) => {
+    const result = {};
+    for (const [key, value] of Object.entries(attributes)) {
+      const camelKey = key.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
+      result[camelKey] = value;
+    }
+    return result;
+  };
+
+  const processChildren = (children) =>
+    children.map((child) => {
+      const tag = child.name;
+      const attributes = camelCaseAttributes(child.attributes || {});
+      const childrenElements = child.children ? processChildren(child.children) : null;
+      return childrenElements
+        ? [tag, attributes, childrenElements]
+        : [tag, attributes];
+    });
+
+  return processChildren(parsed.children);
 };
+
 
 const build = async () => {
   try {
