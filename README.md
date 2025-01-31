@@ -2,8 +2,13 @@
 
 ## Table of Contents
 
+- [Website](#website)
 - [Installation](#installation)
 - [Usage Examples](#usage-examples)
+
+## Website
+
+Visit [website](https://magicon.vercel.app/) to view icons
 
 ## Installation
 

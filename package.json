@@ -1,6 +1,6 @@
 {
   "name": "magicon",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "Icon components",
   "module": "./dist/esm/magicon.js",
   "types": "./dist/esm/magicon.d.ts",
